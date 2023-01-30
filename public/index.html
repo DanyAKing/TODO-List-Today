@@ -6,15 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JavaScript TODO list by Dany King</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="./stylesheet/style.css">
 </head>
 <body>
   <div class="container">
-    <div id="new_task">
-      <input id="input_task" type="text" placeholder="zadanie do zrealizowania..." >
-      <button id="add_btn">Dodaj</button>
+    <div class="header">
+      <h1 id="header">TODO List Today</h1>
     </div>
-    <div id="tasks"></div>
+    <div class="new_task">
+      <form>
+        <input id="input_task" type="text" placeholder="zadanie do zrealizowania..." >
+        <button id="add_btn" type="submit">Dodaj</button>
+      </form>
+    </div>
+    <div class="tasks"></div>
   </div>
 
   <script src="./js/app.js"></script>

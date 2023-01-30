@@ -2,12 +2,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Rubik', sans-serif;
 }
 
 body {
   height: 35%;
-  min-width: 340px;
+  min-width: 350px;
   margin: auto;
   position: absolute;
   display: flex;
@@ -20,7 +20,16 @@ body {
   background-color: bisque;
 }
 
-#new_task {
+#header {
+  font-size: 38px;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  color: #111111;
+  text-shadow: 0 5px 10px rgba(0, 0, 0, 0.35);
+}
+
+.new_task {
   position: relative;
   display: flex;
   justify-content: center;
@@ -31,7 +40,7 @@ body {
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
 }
 
-#new_task input {
+.new_task input {
   border-radius: 5px;
   width: 350px;
   height: 45px;
@@ -43,13 +52,13 @@ body {
   position: relative;
 }
 
-#new_task input:focus {
+.new_task input:focus {
   outline: none;
   border-color: cadetblue;
 }
 
-#new_task button {
-  position: relative;
+.new_task button {
+  position: absolute;
   float: right;
   width: 65px;
   height: 45px;
@@ -64,31 +73,35 @@ body {
   cursor: pointer;
 }
 
-#tasks {
+.tasks {
   width: 100%;
-  position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  justify-content: center;
   margin-top: 40px;
-  background-color: bisque;
   padding: 30px 20px;
   border-radius: 5px;
 }
 
 .task {
+  position: inherit;
   background-color: antiquewhite;
   height: 50px;
+  width: 100%;
   padding: 5px 10px;
   border-radius: 5px;
   margin-top: 10px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   cursor: pointer;
   border-bottom: 2px solid #d1d3d4;
 } 
 
-.task span {
+/* .task span {
   font-size: 13px;
   font-weight: 400;
   cursor: pointer;
@@ -108,4 +121,4 @@ body {
   text-decoration: line-through;
   opacity: 0.7;
 }
-
+ */
