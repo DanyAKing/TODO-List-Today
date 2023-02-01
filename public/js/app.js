@@ -2,7 +2,6 @@ const addBtn = document.querySelector('#add_btn');
 const inputTask = document.querySelector('#input_task');
 const tasks = document.querySelector('.tasks');
 
-
 const changeInputPlaceholder = (constructor) => {
   if (inputTask.value.length === 0) {
     inputTask.setAttribute('placeholder', 'wprowadź zadanie do zrealizowania!');
@@ -39,7 +38,7 @@ const singleTaskCreator = (inputData) => {
 
   contener.appendChild(buttonCreator('remove_btn', 'Usuń', buttonContener));
   buttonCreator('edit_btn', 'Edytuj', buttonContener);
-  
+
   return contener;
 };
 
@@ -60,17 +59,13 @@ const sendDataToBackend = async () => {
     });
 };
 
-// const fetchDataOnStartup = async () => {
-//   try {
-//     const res = await fetch('http://127.0.0.1:3000/saved');
-//     const data = await res.json();
-//     console.log(data);
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
-
-// fetchDataOnStartup();
+(async () => {
+  const res = await fetch('http://127.0.0.1:3000/saved');
+  const data = await res.json();
+  data.tasks.forEach(element => {
+    tasks.appendChild(singleTaskCreator(element.content));
+  });
+})();
 
 addBtn.addEventListener('click', async event => {
   event.preventDefault();
