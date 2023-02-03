@@ -1,7 +1,14 @@
 const addBtn = document.querySelector('#add_btn');
 const removeAllBtn = document.querySelector('#remove_all_btn');
+const refreshBtn = document.querySelector('#refresh_btn');
+const doneBtn = document.querySelector('#done_btn');
+const removeItemBtn = document.querySelector('#remove_item_btn');
+
 const inputTask = document.querySelector('#input_task');
 const tasks = document.querySelector('.tasks');
+// const task = [...document.querySelectorAll('[value]')];
+
+let itemCounter = 0;
 
 const changeInputPlaceholder = (constructor) => {
   if (inputTask.value.length === 0) {
@@ -16,13 +23,14 @@ const changeInputPlaceholder = (constructor) => {
 
 const removeChilds = (parent) => {
   while (parent.lastChild) {
-      parent.removeChild(parent.lastChild);
+    parent.removeChild(parent.lastChild);
   }
 };
 
-const buttonCreator = (idName, nameButton, target) => {
+const buttonCreator = (idName, value, nameButton, target) => {
   const btn = document.createElement('button');
   btn.setAttribute('id', idName);
+  btn.setAttribute('value', value);
   btn.setAttribute('type', 'button');
   btn.innerText = nameButton;
 
@@ -30,7 +38,7 @@ const buttonCreator = (idName, nameButton, target) => {
   return target;
 };
 
-const singleTaskCreator = (inputData) => {
+const singleTaskCreator = (inputData, value) => {
   const contener = document.createElement('div');
   contener.className = 'task';
 
@@ -39,12 +47,12 @@ const singleTaskCreator = (inputData) => {
   const buttonContener = document.createElement('div');
   buttonContener.className = 'button_contener';
 
-  textContener.className = 'textContener';
+  textContener.setAttribute('value', value);
   textContener.innerText = inputData;
   contener.appendChild(textContener);
 
-  contener.appendChild(buttonCreator('remove_btn', 'Usuń', buttonContener));
-  buttonCreator('edit_btn', 'Zrobione', buttonContener);
+  contener.appendChild(buttonCreator('done_btn', value, 'Zrobione!', buttonContener));
+  buttonCreator('remove_item_btn', value, 'Usuń z listy', buttonContener);
 
   return contener;
 };
@@ -53,6 +61,7 @@ const sendDataToBackend = async () => {
   await fetch('http://127.0.0.1:3000/task', {
     method: 'POST',
     body: JSON.stringify({
+      index: itemCounter,
       content: inputTask.value,
       done: false,
     }),
@@ -61,27 +70,46 @@ const sendDataToBackend = async () => {
     },
   }).then(res => res.json())
     .then(data => {
-      const { content } = data;
-      singleTaskCreator(content);
+      const { index, content } = data;
+      singleTaskCreator(content, String(index));
     });
 };
 
 (async () => {
   const res = await fetch('http://127.0.0.1:3000/saved');
   const data = await res.json();
-  data.tasks.forEach(element => {
-    tasks.appendChild(singleTaskCreator(element.content));
+  const { taskStorage, updateItemCounter } = data;
+  taskStorage.tasks.forEach(element => {
+    tasks.appendChild(singleTaskCreator(element.content, element.index));
   });
+  itemCounter = updateItemCounter;
 })();
 
 addBtn.addEventListener('click', async event => {
+  itemCounter++;
+
   event.preventDefault();
-  changeInputPlaceholder(singleTaskCreator(inputTask.value));
+  changeInputPlaceholder(singleTaskCreator(inputTask.value, String(itemCounter)));
   sendDataToBackend();
 });
 
 removeAllBtn.addEventListener('click', async () => {
+  itemCounter = 0;
+
   const res = await fetch('http://127.0.0.1:3000/remove/all');
   const data = await res.json();
   if (data === true) removeChilds(tasks);
+});
+
+refreshBtn.addEventListener('click', async () => {
+  const res = await fetch('http://127.0.0.1:3000/refresh');
+  const data = await res.json();
+  removeChilds(tasks);
+  data.tasks.forEach(element => {
+    tasks.appendChild(singleTaskCreator(element.content, element.index));
+  });
+});
+
+doneBtn.addEventListener('click', async () => {
+  console.log('hi');
 });

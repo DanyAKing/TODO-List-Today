@@ -18,9 +18,15 @@ router
   })
   .get('/remove/all', async (req, res) => {
     taskStorage.tasks.splice(0, taskStorage.tasks.length);
+    await writeFile(FILE_PATH, JSON.stringify(taskStorage), 'utf-8');
     res.json(true);
+    console.log('Removed list.');
   })
   .get('/saved', async (req, res) => {
+    const updateItemCounter = taskStorage.tasks.length;
+    res.json({ taskStorage, updateItemCounter });
+  })
+  .get('/refresh', async (req, res) => {
     res.json(taskStorage);
   });
 
