@@ -114,7 +114,7 @@ body {
 
 #refresh_btn {
   position: relative;
-  background-color: darkgreen;
+  background-color: dodgerblue;
 }
 
 #remove_all_btn {
@@ -130,60 +130,72 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* margin: 40px 0; */
-  padding: 40px 40px;
+  padding: 40px 0;
 }
 
 .task {
   position: relative;
   height: auto;
-  /* max-width: inherit; */
-  /* display: inline-flex;
-  align-content: center;
-  justify-content: left;
-  flex-direction: row-reverse; */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   margin-bottom: 15px;
-  padding: 15px 15px;
+  font-size: 22px;
   background-color: antiquewhite;
   border-radius: 5px;
   border-bottom: 2px solid #d1d3d4;
 } 
 
 .text_contener {
-  position: absolute;
-  float: left;
-  margin: 40px;
-  padding: 40px;
-  left: 5px;
-  margin-right: 5px;
+  position: relative;
+  width: 100%;
+  padding: 5px 0;
+  text-align: center;
 }
+
+
 
 .button_contener {
-  position: absolute;
+  position: relative;
+  width: 100%;
+  padding: 5px 0;
   float: right;
-  top: 2px;
-  right: 2px;
-  margin-left: 5px;
+  display: flex;
+  justify-content: center;
 }
 
-/* .task span {
-  font-size: 13px;
-  font-weight: 400;
-  cursor: pointer;
-}
-
-.task button {
-  border: none;
-  background-color: #19A68C;
-  height: 100%
-  width 400px;
-  color: antiquewhite;
+.button_contener button {
+  position: relative;
+  height: 22px;
+  width: 90px;
+  margin: 2px;
+  padding: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111111;
   border-radius: 5px;
+  font-size: 12px;
+  border: none;
+  outline: none;
+  opacity: 0.75;
+  transition: 0.3s;
   cursor: pointer;
 }
 
-.completed {
-  text-decoration: line-through;
-  opacity: 0.7;
+.button_contener button:hover {
+  opacity: 1;
 }
- */
+
+#done_btn {
+  background-color: green;
+}
+
+#remove_item_btn {
+  background-color: crimson;
+}
+
+.done_btn_active {
+  text-decoration: line-through;
+  opacity: 0.6;
+}

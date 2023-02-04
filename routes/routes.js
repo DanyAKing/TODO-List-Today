@@ -12,7 +12,6 @@ router
   .post('/task', async (req, res) => {
     taskStorage.tasks.push(req.body);
     await writeFile(FILE_PATH, JSON.stringify(taskStorage), 'utf-8');
-    console.log(taskStorage);
 
     res.json(req.body);
   })
