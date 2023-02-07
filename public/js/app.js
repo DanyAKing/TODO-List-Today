@@ -5,17 +5,6 @@ const refreshBtn = document.querySelector('#refresh_btn');
 const inputTask = document.querySelector('#input_task');
 const tasks = document.querySelector('.tasks');
 
-const changeInputPlaceholder = (constructor) => {
-  if (inputTask.value.length === 0) {
-    inputTask.setAttribute('placeholder', 'wprowadź zadanie do zrealizowania!');
-    setTimeout(() => {
-      inputTask.setAttribute('placeholder', 'zadanie do zrealizowania...');
-    }, 2200);
-  } else {
-    tasks.appendChild(constructor);
-  }
-};
-
 const removeChilds = (parent) => {
   while (parent.lastChild) {
     parent.removeChild(parent.lastChild);
@@ -48,6 +37,71 @@ const singleTaskCreator = (inputData, value) => {
   return taskContener;
 };
 
+const removeItemBtn = async () => {
+  const task = document.querySelector('.task');
+  const btns = [...document.querySelectorAll('[remove-btn-id]')];
+
+  if (task === null) return;
+
+  for (const btn of btns) {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('remove-btn-id');
+      await fetch('http://127.0.0.1:3000/remove/item', {
+        method: 'POST',
+        body: JSON.stringify({ element: id }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          let { itemCounter } = data;
+          const { taskStorage } = data;
+
+          removeChilds(tasks);
+
+          taskStorage.tasks.forEach(element => {
+            tasks.appendChild(singleTaskCreator(element.content, String(itemCounter++)));
+          });
+          removeItemBtn();
+        });
+    });
+  }
+};
+
+const doneBtn = async () => {
+  const task = document.querySelector('.task');
+  const btns = [...document.querySelectorAll('[done-btn-id]')];
+
+  if (task === null) return;
+
+  for (const btn of btns) {
+    btn.addEventListener('click', async () => {
+      const target = btn.parentNode;
+      const taskId = target.getAttribute('task-id');
+      target.classList.toggle('text_done');
+
+      if (target.classList.contains('text_done')) {
+        await fetch('http://127.0.0.1:3000/done', {
+          method: 'POST',
+          body: JSON.stringify({ done: true, id: taskId }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      } else {
+        await fetch('http://127.0.0.1:3000/done', {
+          method: 'POST',
+          body: JSON.stringify({ done: false, id: taskId }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+    });
+  }
+};
+
 const sendDataToBackend = async () => {
   await fetch('http://127.0.0.1:3000/task', {
     method: 'POST',
@@ -58,96 +112,51 @@ const sendDataToBackend = async () => {
     headers: {
       'Content-type': 'application/json',
     },
-  })
-    .then(res => res.json())
-    .then(data => {
-      let { itemCounter, taskStorage } = data;
-      // const { taskStorage } = data;
-      removeChilds(tasks);
-      taskStorage.tasks.forEach(element => {
-        tasks.appendChild(singleTaskCreator(element.content, String(itemCounter++)));
-      });
-    });
+  });
 };
 
-const taskBtnAction = () => {
-  const task = [...document.querySelectorAll('[task-id]')];
-  const doneBtn = [...document.querySelectorAll('[done-btn-id]')];
-  const removeItemBtn = [...document.querySelectorAll('[remove-btn-id]')];
-
-  for (const btn of doneBtn) {
-    btn.addEventListener('click', () => {
-      const btnId = btn.getAttribute('done-btn-id');
-      for (const singleTask of task) {
-        const taskId = singleTask.getAttribute('task-id');
-        if (taskId === btnId) singleTask.classList.toggle('text_done');
-      }
-    });
-  }
-
-  for (const btn of removeItemBtn) {
-    btn.addEventListener('click', () => {
-      const btnId = btn.getAttribute('remove-btn-id');
-      fetch('http://127.0.0.1:3000/remove/item', {
-        method: 'POST',
-        body: JSON.stringify({ element: btnId }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(res => res.json())
-        .then(data => {
-          let { itemCounter } = data;
-          const { taskStorage } = data;
-          removeChilds(tasks);
-          taskStorage.tasks.forEach(element => {
-            tasks.appendChild(singleTaskCreator(element.content, String(itemCounter++)));
-          });
-        });
-
-      for (const singleTask of task) {
-        const taskId = singleTask.getAttribute('task-id');
-        if (taskId === btnId) tasks.removeChild(singleTask);
-      }
-    });
-  }
+const refresh = async () => {
+  await fetch('http://127.0.0.1:3000/refresh', {
+    method: 'POST',
+    body: JSON.stringify({ refresh: true }),
+    headers: {
+      'Content-type': 'application/json',
+    },
+  });
 };
 
-(async () => {
+const getDataFromBackend = async () => {
   const res = await fetch('http://127.0.0.1:3000/saved');
   const data = await res.json();
-  localStorage.setItem('taskStorage', JSON.stringify(data));
 
   let { itemCounter } = data;
   const { taskStorage } = data;
-  taskStorage.tasks.forEach(element => {
+
+  removeChilds(tasks);
+  taskStorage.tasks.filter(item => item.done !== true).forEach(element => {
     tasks.appendChild(singleTaskCreator(element.content, String(itemCounter++)));
   });
+  doneBtn();
+  removeItemBtn();
+};
 
-  taskBtnAction();
-})();
-
-let { itemCounter } = JSON.parse(localStorage.getItem('taskStorage'));
+getDataFromBackend();
 
 addBtn.addEventListener('click', async event => {
   event.preventDefault();
-  changeInputPlaceholder(singleTaskCreator(inputTask.value, String(itemCounter++)));
-  taskBtnAction();
+
   sendDataToBackend();
+  getDataFromBackend();
 });
 
 removeAllBtn.addEventListener('click', async () => {
   const res = await fetch('http://127.0.0.1:3000/remove/all');
   const data = await res.json();
+
   if (data === true) removeChilds(tasks);
 });
 
 refreshBtn.addEventListener('click', async () => {
-  const res = await fetch('http://127.0.0.1:3000/refresh');
-  const data = await res.json();
-  removeChilds(tasks);
-  const { taskStorage } = data;
-  taskStorage.tasks.forEach(element => {
-    tasks.appendChild(singleTaskCreator(element.content, String(itemCounter++)));
-  });
+  refresh();
+  getDataFromBackend();
 });
