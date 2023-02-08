@@ -1,7 +1,7 @@
 const express = require('express');
 const { writeFile, readFile } = require('fs').promises;
-const { taskStorage } = require('../src/task-storage');
-const { fetchDataOnStartup } = require('../src/fetch-data-on-startup');
+const { taskStorage } = require('../task-storage');
+const { fetchDataOnStartup } = require('../fetch-data-on-startup');
 
 const router = express.Router();
 const FILE_PATH = './database/data.json';
