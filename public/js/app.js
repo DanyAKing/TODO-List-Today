@@ -21,14 +21,19 @@ const buttonCreator = (idName, id, value, nameButton) => {
   return btn;
 };
 
-const singleTaskCreator = (inputData, value) => {
+const singleTaskCreator = (content, done, value) => {
   const taskContener = document.createElement('div');
-  taskContener.className = 'task';
+  taskContener.classList = 'task';
+
+  if (done === true) {
+    taskContener.classList = 'task text_done';
+  }
+
   taskContener.setAttribute('task-id', value);
 
   const text = document.createElement('div');
-  text.className = 'text';
-  text.innerText = inputData;
+  text.classList = 'text';
+  text.innerText = `${Number(value) + 1}. ${content}`;
   taskContener.appendChild(text);
 
   taskContener.appendChild(buttonCreator('done_btn', 'done-btn-id', value, 'Zrobione!'));
@@ -45,7 +50,7 @@ const removeItemBtn = async () => {
 
   for (const btn of btns) {
     btn.addEventListener('click', async () => {
-      const id = btn.getAttribute('remove-btn-id');
+      const id = btn.parentElement.getAttribute('task-id');
       await fetch('http://127.0.0.1:3000/remove/item', {
         method: 'POST',
         body: JSON.stringify({ element: id }),
@@ -55,15 +60,7 @@ const removeItemBtn = async () => {
       })
         .then(res => res.json())
         .then(data => {
-          let { itemCounter } = data;
-          const { taskStorage } = data;
-
-          removeChilds(tasks);
-
-          taskStorage.tasks.forEach(element => {
-            tasks.appendChild(singleTaskCreator(element.content, String(itemCounter++)));
-          });
-          removeItemBtn();
+          if (data === true) getDataFromBackend();
         });
     });
   }
@@ -130,11 +127,11 @@ const getDataFromBackend = async () => {
   const data = await res.json();
 
   let { itemCounter } = data;
-  const { taskStorage } = data;
+  const { dataFromFile } = data;
 
   removeChilds(tasks);
-  taskStorage.tasks.filter(item => item.done !== true).forEach(element => {
-    tasks.appendChild(singleTaskCreator(element.content, String(itemCounter++)));
+  dataFromFile.tasks.forEach(element => {
+    tasks.appendChild(singleTaskCreator(element.content, element.done, String(itemCounter++)));
   });
   doneBtn();
   removeItemBtn();
