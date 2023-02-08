@@ -1,11 +1,26 @@
-do 07.02.2023
+# TODO List Today
 
-https://docs.google.com/forms/d/e/1FAIpQLScJ2hpDPTHB9vpD3FtfoW85S_Un6jaG6POHA0VHf-9lfNZa9w/viewform
+A simple diary of today's tasks to complete
 
-- lista todo rzeczy do zrobienia w aplikacjie express.js,
-- można dodawać, usuwać oraz zaznaczać zrealizowane już zadania,
-- do przechowywania rzeczy używaj danych .json, które będa zapisywane i odczytywane asynchronicznie,
-- dane przechowywuj w pliku .json(), tak aby po uruchomireniu aplikacji można było wczytać (zapisane wcześniej zadania) na listę,
-- dane przechowywuj w obiekcie z informacją typu boolean czy zadanie zostało wykonane,
-- podpowiedź - po modyfikacjach listy można zadać pytanie do serwera w celu odświeżenia listy,
-- wszystkie te zadania powinny wykonywać się bez przeładowania się strony,
+## Introduction
+The purpose of creating the application is a competition for MegaK participants
+
+## Technologies
+* HTML5
+* CSS3
+* JavaScript ES6
+
+### Frameworks
+* NodeJs 18.12.1
+* Express 4.18.2
+
+## Setup
+The basic launch of the application takes place in the codesandbox.io environment
+### For manual setup
+Download repository from https://github.com/DanyAKing/TODO-List-Today
+```
+git clone https://github.com/user-name/repository.git
+npm install
+node server.js
+```
+open browser and connect address 127.0.0.1:3000
