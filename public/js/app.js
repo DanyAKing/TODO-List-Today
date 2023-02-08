@@ -51,7 +51,7 @@ const removeItemBtn = async () => {
   for (const btn of btns) {
     btn.addEventListener('click', async () => {
       const id = btn.parentElement.getAttribute('task-id');
-      await fetch('http://127.0.0.1:3000/remove/item', {
+      await fetch('/remove/item', {
         method: 'POST',
         body: JSON.stringify({ element: id }),
         headers: {
@@ -79,7 +79,7 @@ const doneBtn = async () => {
       target.classList.toggle('text_done');
 
       if (target.classList.contains('text_done')) {
-        await fetch('http://127.0.0.1:3000/done', {
+        await fetch('/done', {
           method: 'POST',
           body: JSON.stringify({ done: true, id: taskId }),
           headers: {
@@ -87,7 +87,7 @@ const doneBtn = async () => {
           },
         });
       } else {
-        await fetch('http://127.0.0.1:3000/done', {
+        await fetch('/done', {
           method: 'POST',
           body: JSON.stringify({ done: false, id: taskId }),
           headers: {
@@ -100,7 +100,7 @@ const doneBtn = async () => {
 };
 
 const sendDataToBackend = async () => {
-  await fetch('http://127.0.0.1:3000/task', {
+  await fetch('/task', {
     method: 'POST',
     body: JSON.stringify({
       content: inputTask.value,
@@ -113,7 +113,7 @@ const sendDataToBackend = async () => {
 };
 
 const refresh = async () => {
-  await fetch('http://127.0.0.1:3000/refresh', {
+  await fetch('/refresh', {
     method: 'POST',
     body: JSON.stringify({ refresh: true }),
     headers: {
@@ -123,7 +123,7 @@ const refresh = async () => {
 };
 
 const getDataFromBackend = async () => {
-  const res = await fetch('http://127.0.0.1:3000/saved');
+  const res = await fetch('/saved');
   const data = await res.json();
 
   let { itemCounter } = data;
@@ -147,7 +147,7 @@ addBtn.addEventListener('click', async event => {
 });
 
 removeAllBtn.addEventListener('click', async () => {
-  const res = await fetch('http://127.0.0.1:3000/remove/all');
+  const res = await fetch('/remove/all');
   const data = await res.json();
 
   if (data === true) removeChilds(tasks);
