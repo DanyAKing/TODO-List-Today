@@ -59,11 +59,8 @@ router
   .post('/refresh', async (req, res) => {
     const { refresh } = req.body;
 
-    if (refresh === true) {
-      taskStorage.tasks.forEach(element => {
-        if (element.done === true) taskStorage.tasks.splice(element, 1);
-      });
-    }
+    const filteredList = taskStorage.tasks.filter(el => el.done !== true);
+    taskStorage.tasks = filteredList;
 
     console.log('Refresh list.');
     console.log(taskStorage);
