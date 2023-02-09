@@ -4,7 +4,7 @@ const { taskStorage } = require('../task-storage');
 const { fetchDataOnStartup } = require('../fetch-data-on-startup');
 
 const router = express.Router();
-const FILE_PATH = './database/data.json';
+const FILE_PATH = './src/database/data.json';
 
 const saveData = async (target) => {
   await writeFile(FILE_PATH, JSON.stringify(target), 'utf-8');
@@ -59,11 +59,8 @@ router
   .post('/refresh', async (req, res) => {
     const { refresh } = req.body;
 
-    if (refresh === true) {
-      taskStorage.tasks.forEach(element => {
-        if (element.done === true) taskStorage.tasks.splice(element, 1);
-      });
-    }
+    const filteredList = taskStorage.tasks.filter(el => el.done !== true);
+    taskStorage.tasks = filteredList;
 
     console.log('Refresh list.');
     console.log(taskStorage);
